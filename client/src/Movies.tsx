@@ -78,11 +78,9 @@ const MoviesHomePage: React.FC = () => {
                 </div>
  
                 <div className="row">
-                    {/* {favoriteGenre && ( */}
                         <div className="col">
                             <h2 className='movieLabel'>Your favorite genre: {favoriteGenre}</h2>
                         </div>
-                    {/* )} */}
                 </div>
 
 
@@ -94,7 +92,7 @@ const MoviesHomePage: React.FC = () => {
                                 <div className="card-body">
                                     <h5 className="card-title">{movie.title}</h5>
                                     <p className="card-text">{movie.plot}</p>
-                                    <button className="btn btn-primary">Go somewhere</button>
+                                    <p className="card-text text-secondary">{movie.genres.join(', ')} | {movie.year}</p>
                                 </div>
                             </div>
                         </div>
