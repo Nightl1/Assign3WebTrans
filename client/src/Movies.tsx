@@ -27,7 +27,23 @@ const MoviesHomePage: React.FC = () => {
                     const data = await response.json();
                     console.log('data: ', data);
                     setMovies(data); //fetched the movies data
-                    setFavoriteGenre(data[0]);
+
+                    // Take user's fav genre from fetched movies
+                    const genres = data.reduce((acc: string[], movie: Record<string, any>) => {
+                        movie.genres.forEach((genre: string) => {
+                            if (!acc.includes(genre)) {
+                                acc.push(genre);
+                            }
+                        });
+                        return acc;
+                    }, []);
+
+                    // Take the fav genre registered from the token
+                    const favoriteGenre = localStorage.getItem('genre');
+                    console.log('favoriteGenre: ', favoriteGenre);
+                    if (favoriteGenre && genres.includes(favoriteGenre)) {
+                        setFavoriteGenre(favoriteGenre);
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -40,6 +56,7 @@ const MoviesHomePage: React.FC = () => {
     // logout and go to log in again
     const handleLogout = () => {
         localStorage.removeItem('token'); // wil clear token from local storage
+        localStorage.removeItem('favoriteGenre'); // clear the fav genre from local storage
         // setIsLoggedIn(false);
         window.location.href = '/Part2'; // redirect to login page
     };
@@ -60,30 +77,31 @@ const MoviesHomePage: React.FC = () => {
                     </div>
                 </div>
  
-                {/* <div className="row">
-                    <div className="col">
-                        <h2 className='movieLabel'>Your favorite genre: {favoriteGenre}</h2>
-                    </div>
-                </div> */}
-                
+                <div className="row">
+                    {/* {favoriteGenre && ( */}
+                        <div className="col">
+                            <h2 className='movieLabel'>Your favorite genre: {favoriteGenre}</h2>
+                        </div>
+                    {/* )} */}
+                </div>
+
+
                 <div className="row">
                     {movies.map((movie: Record<string, any>, index) => (
-                        <div className="col-4" key={index}>
-                            {movie.title && (
-                                <div className="card-group">
-                                <div className="card" style={{ width: '18rem' }}>
-                                    <img src={movie.poster} className="card-img-top" alt={movie.title} style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                                    <div className="card-body">
-                                        <h5 className="card-title">{movie.title}</h5>
-                                        <p className="card-text">{movie.plot}</p>
-                                        <a href="#" className="btn btn-primary">Go somewhere</a>
-                                    </div>
+                        <div className="col-md-4" key={index}>
+                            <div className="card">
+                                <img src={movie.poster} className="card-img-top" alt={movie.title} style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                                <div className="card-body">
+                                    <h5 className="card-title">{movie.title}</h5>
+                                    <p className="card-text">{movie.plot}</p>
+                                    <button className="btn btn-primary">Go somewhere</button>
                                 </div>
-                                </div>
-                            )}
+                            </div>
                         </div>
                     ))}
                 </div>
+
+
             </div>
         </div>
     );
